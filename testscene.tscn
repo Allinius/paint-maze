@@ -1,0 +1,81 @@
+[gd_scene load_steps=7 format=3 uid="uid://bayalvyfip8pv"]
+
+[ext_resource type="PackedScene" uid="uid://droy5n4ft44ag" path="res://player.tscn" id="2_44gc5"]
+[ext_resource type="PackedScene" uid="uid://xbm7r54x7f3w" path="res://paintable_plane.tscn" id="2_612pj"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_44gc5"]
+sky_top_color = Color(1, 1, 1, 1)
+sky_horizon_color = Color(2.1665, 2.1665, 2.1665, 1)
+ground_bottom_color = Color(1, 1, 1, 1)
+ground_horizon_color = Color(2.1665, 2.1665, 2.1665, 1)
+
+[sub_resource type="Sky" id="Sky_612pj"]
+sky_material = SubResource("ProceduralSkyMaterial_44gc5")
+
+[sub_resource type="Environment" id="Environment_asog6"]
+background_mode = 2
+sky = SubResource("Sky_612pj")
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_44gc5"]
+albedo_color = Color(0, 0, 0, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.70710677, -0.61237246, 0.35355335, 0, 0.49999997, 0.86602545, -0.70710677, 0.61237246, -0.35355335, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_asog6")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.75, 0)
+use_collision = true
+size = Vector3(16, 0.5, 16)
+material = SubResource("StandardMaterial3D_44gc5")
+
+[node name="Player" parent="." instance=ExtResource("2_44gc5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2.5)
+
+[node name="PaintablePlane" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 2, 0)
+
+[node name="PaintablePlane3" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -2, 2, 2)
+
+[node name="PaintablePlane4" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1.9106857e-15, -8.742278e-08, -1, 4.371139e-08, -1, 8.742278e-08, -1, -4.371139e-08, 1.9106855e-15, 0, 4, 2)
+
+[node name="PaintablePlane7" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1.9106857e-15, -8.742278e-08, -1, 4.371139e-08, -1, 8.742278e-08, -1, -4.371139e-08, 1.9106855e-15, 4, 4, 2)
+
+[node name="PaintablePlane5" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, 6, 2, -2)
+
+[node name="PaintablePlane6" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1.9106857e-15, -8.742278e-08, -1, 4.371139e-08, -1, 8.742278e-08, -1, -4.371139e-08, 1.9106855e-15, 8, 4, 2)
+
+[node name="PaintablePlane10" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1.9106857e-15, -8.742278e-08, -1, 4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 5.7320566e-15, 0, 0, 2)
+
+[node name="PaintablePlane11" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1.9106857e-15, -8.742278e-08, -1, 4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 5.7320566e-15, 4, 0, 2)
+
+[node name="PaintablePlane12" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1.9106857e-15, -8.742278e-08, -1, 4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 5.7320566e-15, 8, 0, 2)
+
+[node name="PaintablePlane14" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1.9106857e-15, -8.742278e-08, -1, 4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 5.7320566e-15, 8, 0, 6)
+
+[node name="PaintablePlane13" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1.9106857e-15, -8.742278e-08, -1, 4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 5.7320566e-15, 8, 0, -2)
+
+[node name="PaintablePlane2" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 4, 2, 0)
+
+[node name="PaintablePlane8" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(-1, 8.742278e-08, -3.821371e-15, 0, -4.371139e-08, -1, -8.742278e-08, -1, 4.371139e-08, 4, 2, 4)
+
+[node name="PaintablePlane9" parent="." instance=ExtResource("2_612pj")]
+transform = Transform3D(-1, 8.742278e-08, -3.821371e-15, 0, -4.371139e-08, -1, -8.742278e-08, -1, 4.371139e-08, 0, 2, 4)
