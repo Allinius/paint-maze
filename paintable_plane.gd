@@ -4,9 +4,10 @@ extends Node3D
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
-
 @export var plane_size = Vector2(4, 4)
 @export var texture_size = Vector2i(128, 128)
+@export var fill_color: Color = Color.WHITE
+@export var random_color: bool = false
 
 var image : Image
 var image_texture : ImageTexture
@@ -16,6 +17,7 @@ var material_instance : StandardMaterial3D
 func _ready() -> void:
 	init_mesh()
 	init_texture()
+		
 
 func init_mesh():
 	#var mesh := PlaneMesh.new()
@@ -29,8 +31,12 @@ func init_mesh():
 
 func init_texture():
 	image = Image.create(texture_size.x, texture_size.y, false, Image.FORMAT_RGBA8)
-	image.fill(Color(1, 1, 1, 1))
-	#image.fill(Color(randf(), randf(), randf(), 1))
+	if random_color:
+		image.fill(Color(randf(), randf(), randf(), 1))
+	else:
+		image.fill(fill_color)
+		
+		
 
 	image_texture = ImageTexture.create_from_image(image)
 
@@ -63,6 +69,7 @@ func paint_uv(uv: Vector2, radius: float, color: Color):
 	var x = int(uv.x * texture_size.x)
 	var y = int((1.0 - uv.y) * texture_size.y)
 
+	#image.fill_rect(Rect2i(x - radius, y - radius, 2 * radius, 2 * radius), color)
 	for i in range(-radius, radius):
 		for j in range(-radius, radius):
 			if i * i + j * j <= radius * radius:

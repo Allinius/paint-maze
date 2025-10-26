@@ -1,7 +1,11 @@
-extends Node3D
+class_name MazeGenerator
+extends NavigationRegion3D
+
 
 const PAINTABLE_PLANE = preload("uid://xbm7r54x7f3w")
-const PLAYER = preload("uid://droy5n4ft44ag")
+const START_CHUNK = preload("uid://w45isuoi6m6l")
+const END_CHUNK = preload("uid://dkolt007d6my3")
+
 const PLANE_SIZE = Vector2(4, 4)
 
 const WALL = 0
@@ -9,14 +13,16 @@ const FLOOR = 1000
 
 var map: Array[Array]
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	map = generate_maze(9, 9)
-	var counts := count_steps(map)
+func create(width: int, height: int) -> void:
+	map = generate_maze(width, height)
+	var info := count_steps(map)
 	print_maze(map)
-	print(counts)
+	print(info["counts"])
 	create_map(map)
-	spawn_player(counts[0][0])
+	bake_navigation_mesh(true)
+	spawn_start_chunk(info["start"])
+	spawn_end_chunk(info["end"]["pos"], info["end"]["edge"])
+	print(info["end"])
 
 func generate_maze(width: int, height: int) -> Array[Array]:
 	var maze: Array[Array] = []
@@ -113,10 +119,10 @@ func create_walls(maze: Array[Array], x: int, y: int):
 		"right": Vector2i(1, 0),
 	}
 	var dir_rotations = {
-		"up": { "axis": Vector3.LEFT, "angle": deg_to_rad(90) },
-		"down": { "axis": Vector3.LEFT, "angle": deg_to_rad(-90) },
-		"left": { "axis": Vector3.BACK, "angle": deg_to_rad(90) },
-		"right": { "axis": Vector3.BACK, "angle": deg_to_rad(-90) },
+		"up": { "axis": Vector3.RIGHT, "angle": deg_to_rad(90) },
+		"down": { "axis": Vector3.RIGHT, "angle": deg_to_rad(-90) },
+		"left": { "axis": Vector3.FORWARD, "angle": deg_to_rad(90) },
+		"right": { "axis": Vector3.FORWARD, "angle": deg_to_rad(-90) },
 	}
 	for dir in directions:
 		var coord = Vector2i(x, y) + dir_vectors[dir]
@@ -128,13 +134,24 @@ func create_walls(maze: Array[Array], x: int, y: int):
 				PLANE_SIZE.y / 2,
 				PLANE_SIZE.y * y + (dir_vectors[dir].y * PLANE_SIZE.y / 2)
 			)
-			wall_plane.transform.basis = ceil_plane.transform.basis.rotated(dir_rotations[dir]["axis"], dir_rotations[dir]["angle"])
+			wall_plane.transform.basis = wall_plane.transform.basis.rotated(dir_rotations[dir]["axis"], dir_rotations[dir]["angle"])
 			add_child(wall_plane)
 
-func spawn_player(pos: Vector2i):
-	var player= PLAYER.instantiate()
-	player.position = Vector3(PLANE_SIZE.x * pos.x, 1, PLANE_SIZE.y * pos.y)
-	add_child(player)
+func spawn_start_chunk(pos: Vector2i):
+	var start: Node3D = START_CHUNK.instantiate()
+	start.position = Vector3(PLANE_SIZE.x * pos.x, 0, PLANE_SIZE.y * pos.y)
+	add_child(start)
+
+func spawn_end_chunk(pos: Vector2i, near_edge: String):
+	var end: Node3D = END_CHUNK.instantiate()
+	end.position = Vector3(PLANE_SIZE.x * pos.x, 0, PLANE_SIZE.y * pos.y)
+	if near_edge == "e":
+		end.transform.basis = end.transform.basis.rotated(Vector3.DOWN, deg_to_rad(90))
+	if near_edge == "s":
+		end.transform.basis = end.transform.basis.rotated(Vector3.DOWN, deg_to_rad(180))
+	if near_edge == "w":
+		end.transform.basis = end.transform.basis.rotated(Vector3.DOWN, deg_to_rad(-90))
+	add_child(end)
 
 func get_neighbor_floors(maze: Array[Array], cell: Vector2i) -> Array:
 	var width = maze[0].size()
@@ -155,28 +172,55 @@ func get_neighbor_floors(maze: Array[Array], cell: Vector2i) -> Array:
 				result.append(Vector2i(x, y))
 	return result
 	
-func count_steps(maze: Array[Array]) -> Array[Array]:
+func count_steps(maze: Array[Array]) -> Dictionary:
 	var width = maze[0].size()
 	var height = maze.size()
 	var start = Vector2i(randi() % width, randi() % height)
 	while maze[start.y][start.x] == WALL:
 		start = Vector2i(randi() % width, randi() % height)
 	
-	var result: Array[Array] = []
+	var counts: Array[Array] = []
 	maze[start.y][start.x] = 1
 	var stack = [start]
+	var end = {
+		"pos": start,
+		"steps": 0,
+		"edge": "none",
+	}
 	
 	while stack.size() > 0:
 		var curr = stack.pop_front()
 		var curr_steps = maze[curr.y][curr.x]
 		
-		if result.size() < curr_steps:
-			result.append([])
-		result[curr_steps - 1].push_back(curr)
+		while counts.size() < curr_steps:
+			counts.append([])
+		counts[curr_steps - 1].push_back(curr)
+		var near_edge = get_adjacent_edge(maze, curr)
+		if curr_steps - 1 > end["steps"] && near_edge != "none":
+			end["pos"] = curr
+			end["steps"] = curr_steps - 1
+			end["edge"] = near_edge
 		
 		var neighbors = get_neighbor_floors(maze, curr)
 		for neighbor in neighbors:
 			maze[neighbor.y][neighbor.x] = curr_steps + 1
 			stack.push_back(neighbor)
 		
-	return result
+	return {
+		"counts": counts,
+		"start": start,
+		"end": end,
+	}
+
+func get_adjacent_edge(maze: Array[Array], pos: Vector2i) -> String:
+	var width = maze[0].size()
+	var height = maze.size()
+	if pos.x == 1:
+		return "w"
+	if pos.x == width - 2:
+		return "e"
+	if pos.y == 1:
+		return "n"
+	if pos.y == height - 2:
+		return "s"
+	return "none"

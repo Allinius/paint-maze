@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6qsn5o51n31l"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_612pj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pjtg1"]
+size = Vector3(1, 1, 0.1)
+
+[node name="ExitButton" type="Area3D"]
+collision_mask = 2
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(1, 1, 0.1)
+material = SubResource("StandardMaterial3D_612pj")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_pjtg1")

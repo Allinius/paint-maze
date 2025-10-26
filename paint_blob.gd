@@ -1,7 +1,7 @@
 extends RigidBody3D
 
 @export var size := 0.4
-@export var splash_radius = 0.5
+@export var splash_radius = 2.0
 @export var color := Color.BLACK
 
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
@@ -52,5 +52,7 @@ func _splash_paint(center: Vector3):
 
 	for result in results:
 		var body = result.collider
-		if body and body is PaintablePlane:
+		if !body:
+			continue
+		if body is PaintablePlane:
 			body.paint_world_point(center, splash_radius, color)

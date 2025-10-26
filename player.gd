@@ -1,3 +1,4 @@
+class_name Player
 extends CharacterBody3D
 
 @onready var head: Node3D = $Head
@@ -9,6 +10,11 @@ const THROW_ANGLE = 15.0
 
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
+
+func _ready():
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	Global.subscribe("GAME_RESUME", _capture_mouse)
+	Global.subscribe("GAME_END", _release_mouse)
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -34,16 +40,17 @@ func _physics_process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		_capture_mouse()
 		if event.button_index == MOUSE_BUTTON_LEFT && event.pressed:
 			fire_blob()
 	elif event.is_action_pressed("ui_cancel"):
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		_release_mouse()
+		Global.emit_event("GAME_PAUSE")
 	
 	if Input.get_mouse_mode() == 2:
 		if event is InputEventMouseMotion:
-			head.rotate_y(-event.relative.x * 0.01)
-			camera.rotate_x(-event.relative.y * 0.01)
+			head.rotate_y(-event.relative.x * Global.look_sensitivity)
+			camera.rotate_x(-event.relative.y * Global.look_sensitivity)
 			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90)) 
 
 func fire_blob():
@@ -53,3 +60,9 @@ func fire_blob():
 	blob.position = position
 	blob.apply_impulse(THROW_FORCE * throw_direction, Vector3.ZERO)
 	get_parent().add_child(blob)
+
+func _capture_mouse():
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+func _release_mouse():
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
