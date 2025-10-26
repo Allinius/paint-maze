@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://c5ybl7jbx7jpb"]
+
+[ext_resource type="Script" uid="uid://diactscvwe34v" path="res://scripts/paint_blob.gd" id="1_46xxn"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_44gc5"]
+radial_segments = 8
+rings = 4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ep4i8"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_612pj"]
+
+[node name="PaintBlob" type="RigidBody3D"]
+collision_layer = 4
+contact_monitor = true
+max_contacts_reported = 1
+script = ExtResource("1_46xxn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_44gc5")
+surface_material_override/0 = SubResource("StandardMaterial3D_ep4i8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_612pj")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

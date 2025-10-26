@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bs3em0wd6boa" path="res://maze_generator.gd" id="1_164s8"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_164s8"]
+agent_radius = 1.0
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_164s8"]
 sky_top_color = Color(1, 1, 1, 1)

@@ -1,0 +1,31 @@
+[gd_scene load_steps=7 format=3 uid="uid://dnll2ejxt2cip"]
+
+[ext_resource type="Script" uid="uid://bs3em0wd6boa" path="res://scripts/maze_generator.gd" id="1_8xbu6"]
+[ext_resource type="Script" uid="uid://de04bwmsct576" path="res://scripts/enemy_spawner.gd" id="2_tn72y"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_164s8"]
+agent_radius = 1.0
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_164s8"]
+sky_top_color = Color(1, 1, 1, 1)
+sky_horizon_color = Color(2.1665, 2.1665, 2.1665, 1)
+ground_bottom_color = Color(1, 1, 1, 1)
+ground_horizon_color = Color(2.1665, 2.1665, 2.1665, 1)
+
+[sub_resource type="Sky" id="Sky_t3ow0"]
+sky_material = SubResource("ProceduralSkyMaterial_164s8")
+
+[sub_resource type="Environment" id="Environment_r1w0m"]
+background_mode = 2
+sky = SubResource("Sky_t3ow0")
+tonemap_mode = 2
+
+[node name="MazeGenerator" type="NavigationRegion3D"]
+navigation_mesh = SubResource("NavigationMesh_164s8")
+script = ExtResource("1_8xbu6")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_r1w0m")
+
+[node name="EnemySpawner" type="Node3D" parent="."]
+script = ExtResource("2_tn72y")

@@ -5,6 +5,7 @@ extends NavigationRegion3D
 const PAINTABLE_PLANE = preload("uid://xbm7r54x7f3w")
 const START_CHUNK = preload("uid://w45isuoi6m6l")
 const END_CHUNK = preload("uid://dkolt007d6my3")
+const ENEMY = preload("uid://drsgc5ysv3lje")
 
 const PLANE_SIZE = Vector2(4, 4)
 
@@ -22,6 +23,11 @@ func create(width: int, height: int) -> void:
 	bake_navigation_mesh(true)
 	spawn_start_chunk(info["start"])
 	spawn_end_chunk(info["end"]["pos"], info["end"]["edge"])
+	
+	var testenemy = ENEMY.instantiate()
+	testenemy.position = Vector3(PLANE_SIZE.x * info["end"]["pos"].x, 0, PLANE_SIZE.y * info["end"]["pos"].y)
+	add_child(testenemy)
+	
 	print(info["end"])
 
 func generate_maze(width: int, height: int) -> Array[Array]:

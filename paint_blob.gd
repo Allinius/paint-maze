@@ -1,7 +1,8 @@
+class_name PaintBlob
 extends RigidBody3D
 
 @export var size := 0.4
-@export var splash_radius = 2.0
+@export var splash_radius = 0.5
 @export var color := Color.BLACK
 
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
@@ -16,13 +17,6 @@ func _ready():
 	
 	collision_shape.shape.radius = size / 2.0
 
-#func _on_body_entered(body: Node) -> void:
-	#var pos = position + (linear_velocity.normalized() * size / 2.0)
-	#if body is PaintablePlane:
-		#
-		#_splash_paint(pos)
-		#queue_free()
-		##(body as PaintablePlane).paint_world_point(pos, 20.0, color)
 
 func _integrate_forces(state):
 	for i in range(state.get_contact_count()):
@@ -30,10 +24,13 @@ func _integrate_forces(state):
 		var collider = state.get_contact_collider_object(i)
 		
 		if collider:
-			_splash_paint(contact_point)
-			queue_free()
+			explode(contact_point)
 
-func _splash_paint(center: Vector3):
+func explode(center: Vector3):
+	splash_paint(center)
+	queue_free()
+
+func splash_paint(center: Vector3):
 	var space_state = get_world_3d().direct_space_state
 
 	# Create a spherical shape to check within

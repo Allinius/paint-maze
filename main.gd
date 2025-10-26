@@ -1,12 +1,11 @@
 extends Node
 
-# TODO title screen
-# TODO ending screen
-# TODO pause menu + sensitivity slider
 # TODO ghost enemy
 # TODO enemy spawning mechanics
 # TODO start tutorial info
+# TODO button model
 # TODO paint fire rate / size modifiers
+# TODO increasing maze size
 # TODO sound effects (footsteps, exit ping, enemy noises)
 # TODO optimize drawing larger circles if necessary
 # TODO only activate exit button once painted over
@@ -28,9 +27,9 @@ func _ready() -> void:
 
 func start():
 	maze_generator = MAZE_GENERATOR.instantiate()
-	maze_generator.create(7, 7)
 	add_child(maze_generator)
 	move_child(maze_generator, 0)
+	maze_generator.create(7, 7)
 	title_screen.hide()
 
 func _on_start_game_pressed() -> void:

@@ -3,7 +3,7 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_612pj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pjtg1"]
-size = Vector3(1, 1, 0.1)
+size = Vector3(1, 1, 0.25)
 
 [node name="ExitButton" type="Area3D"]
 collision_mask = 2
@@ -13,4 +13,5 @@ size = Vector3(1, 1, 0.1)
 material = SubResource("StandardMaterial3D_612pj")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.073779285)
 shape = SubResource("BoxShape3D_pjtg1")

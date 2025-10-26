@@ -13,6 +13,8 @@ const JUMP_VELOCITY = 4.5
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	Global.player = self
 	Global.subscribe("GAME_RESUME", _capture_mouse)
 	Global.subscribe("GAME_END", _release_mouse)
 
@@ -66,3 +68,8 @@ func _capture_mouse():
 	
 func _release_mouse():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
+func _exit_tree():
+	Global.player = null
+	Global.unsubscribe("GAME_RESUME", _capture_mouse)
+	Global.unsubscribe("GAME_END", _release_mouse)

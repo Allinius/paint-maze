@@ -1,0 +1,206 @@
+[gd_scene load_steps=9 format=3 uid="uid://c3qjqmmw5dug7"]
+
+[ext_resource type="Script" uid="uid://bmtubdjj71trp" path="res://scripts/main.gd" id="1_sugp2"]
+[ext_resource type="Script" uid="uid://6e0xww23q8av" path="res://scripts/pause_screen.gd" id="2_jyhfs"]
+[ext_resource type="FontFile" uid="uid://316crgga6wdy" path="res://assets/Maranatha.ttf" id="3_tbgi4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0xm2m"]
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h2yge"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1bvp3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lquwl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7mycd"]
+content_margin_top = 40.0
+content_margin_bottom = 10.0
+
+[node name="Main" type="Node"]
+script = ExtResource("1_sugp2")
+
+[node name="Interface" type="Node" parent="."]
+process_mode = 3
+
+[node name="PauseScreen" type="ColorRect" parent="Interface"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5019608)
+script = ExtResource("2_jyhfs")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/PauseScreen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.5
+offset_top = -57.0
+offset_right = 110.5
+offset_bottom = 57.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResumeButton" type="Button" parent="Interface/PauseScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.45840502, 0.45840508, 0.45840502, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_tbgi4")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0xm2m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_h2yge")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1bvp3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lquwl")
+text = "Resume
+"
+
+[node name="TitleButton" type="Button" parent="Interface/PauseScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.45840502, 0.45840508, 0.45840502, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_tbgi4")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0xm2m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_h2yge")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1bvp3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lquwl")
+text = "Return to Title"
+
+[node name="Label2" type="Label" parent="Interface/PauseScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("3_tbgi4")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7mycd")
+text = "Mouse Sensitivity"
+
+[node name="SensitivitySlider" type="HSlider" parent="Interface/PauseScreen/VBoxContainer"]
+layout_mode = 2
+min_value = 0.001
+max_value = 0.01
+step = 0.001
+value = 0.005
+
+[node name="EndScreen" type="ColorRect" parent="Interface"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5019608)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/EndScreen"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -114.0
+offset_bottom = 114.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CongratsLabel" type="Label" parent="Interface/EndScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("3_tbgi4")
+theme_override_font_sizes/font_size = 64
+text = "You made it out!"
+
+[node name="ScoreLabel" type="Label" parent="Interface/EndScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("3_tbgi4")
+theme_override_font_sizes/font_size = 48
+
+[node name="NextLevelButton" type="Button" parent="Interface/EndScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.45840502, 0.45840508, 0.45840502, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_tbgi4")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0xm2m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_h2yge")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1bvp3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lquwl")
+text = "Give me a bigger maze!"
+
+[node name="TitleButton" type="Button" parent="Interface/EndScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.45840502, 0.45840508, 0.45840502, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_tbgi4")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0xm2m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_h2yge")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1bvp3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lquwl")
+text = "Return to Title"
+
+[node name="TitleScreen" type="ColorRect" parent="Interface"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/TitleScreen"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -114.0
+offset_bottom = 114.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Interface/TitleScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("3_tbgi4")
+theme_override_font_sizes/font_size = 64
+text = "Paint Maze
+"
+
+[node name="StartGameButton" type="Button" parent="Interface/TitleScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.45840502, 0.45840508, 0.45840502, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_tbgi4")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0xm2m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_h2yge")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1bvp3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lquwl")
+text = "Start Game"
+
+[connection signal="pressed" from="Interface/PauseScreen/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="Interface/PauseScreen/VBoxContainer/TitleButton" to="." method="_on_title_button_pressed"]
+[connection signal="value_changed" from="Interface/PauseScreen/VBoxContainer/SensitivitySlider" to="Interface/PauseScreen" method="_on_sensitivity_slider_value_changed"]
+[connection signal="pressed" from="Interface/EndScreen/VBoxContainer/TitleButton" to="." method="_on_title_button_pressed"]
+[connection signal="pressed" from="Interface/TitleScreen/VBoxContainer/StartGameButton" to="." method="_on_start_game_pressed"]
