@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://c3qjqmmw5dug7"]
+[gd_scene load_steps=13 format=3 uid="uid://c3qjqmmw5dug7"]
 
 [ext_resource type="Script" uid="uid://bmtubdjj71trp" path="res://scripts/main.gd" id="1_sugp2"]
 [ext_resource type="Script" uid="uid://6e0xww23q8av" path="res://scripts/pause_screen.gd" id="2_jyhfs"]
 [ext_resource type="FontFile" uid="uid://316crgga6wdy" path="res://assets/Maranatha.ttf" id="3_tbgi4"]
+[ext_resource type="Texture2D" uid="uid://nvbnt5qywsj2" path="res://assets/sprites/ghost.png" id="4_jyhfs"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0xm2m"]
 content_margin_top = 5.0
@@ -17,6 +18,80 @@ content_margin_bottom = 5.0
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7mycd"]
 content_margin_top = 40.0
 content_margin_bottom = 10.0
+
+[sub_resource type="Animation" id="Animation_jyhfs"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("VBoxContainer/StartGameButton:theme_override_colors/font_color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("VBoxContainer/Label:theme_override_colors/font_color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Control/Sprite2D:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_tbgi4"]
+resource_name = "fade_ghost"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Control/Sprite2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.96666664, 3.4, 4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tbgi4"]
+_data = {
+&"RESET": SubResource("Animation_jyhfs"),
+&"fade_ghost": SubResource("Animation_tbgi4")
+}
 
 [node name="Main" type="Node"]
 script = ExtResource("1_sugp2")
@@ -192,6 +267,7 @@ grow_vertical = 2
 [node name="Label" type="Label" parent="Interface/TitleScreen/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_tbgi4")
 theme_override_font_sizes/font_size = 64
 text = "Paint Maze
@@ -203,7 +279,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.45840502, 0.45840508, 0.45840502, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_tbgi4")
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxEmpty_0xm2m")
@@ -211,6 +286,30 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_h2yge")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_1bvp3")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_lquwl")
 text = "Start Game"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Interface/TitleScreen"]
+libraries = {
+&"": SubResource("AnimationLibrary_tbgi4")
+}
+autoplay = "fade_ghost"
+
+[node name="Control" type="Control" parent="Interface/TitleScreen"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Interface/TitleScreen/Control"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(241, 43)
+scale = Vector2(8.104167, 8.104167)
+texture = ExtResource("4_jyhfs")
+region_enabled = true
+region_rect = Rect2(0, 0, 48, 48)
 
 [node name="LevelScreen" type="ColorRect" parent="Interface"]
 visible = false

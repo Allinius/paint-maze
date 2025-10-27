@@ -3,8 +3,9 @@ extends Node3D
 const ENEMY = preload("uid://drsgc5ysv3lje")
 
 const MAX_HEIGHT = 3.9
-const SPAWN_INTERVAL = 5.0
-const MAX_ENEMY_COUNT = 2
+const MAX_ENEMY_COUNT = 10
+const MIN_SPAWN_INTERVAL = 5.0
+const MAX_SPAWN_INTERVAL = 20.0
 
 var splat_positions: Array[Vector3] = []
 var painted_amount = 0
@@ -35,7 +36,7 @@ func _on_splat_event(center: Vector3, splash_radius: float, color: Color):
 		# print(spawn_interval)
 
 func calculate_spawn_interval():
-	spawn_interval = 20.0 - (min(painted_amount, 200.0) / 200.0) * 15.0
+	spawn_interval = MAX_SPAWN_INTERVAL - (min(painted_amount, 200.0) / 200.0) * (MAX_SPAWN_INTERVAL - MIN_SPAWN_INTERVAL)
 	#spawn_interval = 5.0
 
 func spawn_enemy() -> void:
@@ -47,6 +48,6 @@ func spawn_enemy() -> void:
 	add_child(enemy)
 	enemy_count += 1
 
-func _on_enemy_exploded(_health: int):
+func _on_enemy_exploded(..._args: Array):
 	enemy_count -= 1
 	

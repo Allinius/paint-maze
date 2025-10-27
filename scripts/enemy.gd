@@ -1,5 +1,7 @@
 extends Area3D
 
+const MAX_HEIGHT = 3.9
+
 const PAINT_BLOB = preload("uid://c5ybl7jbx7jpb")
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
@@ -12,7 +14,7 @@ const PAINT_BLOB = preload("uid://c5ybl7jbx7jpb")
 @export var health := 3
 @export var explode_blobs_count := 15
 @export var explode_force := 10.0
-@export var explode_blob_splash_radius = 1.5
+@export var explode_blob_splash_radius = 3.0
 
 var navigating := true
 var direction: Vector3
@@ -47,7 +49,7 @@ func update_direction() -> void:
 func move(delta: float):
 	#update speed
 	var player_distance = global_position.distance_to(Global.player.global_position)
-	speed = max(1.5, player_distance / 5)
+	speed = max(1.75, player_distance / 4)
 	
 	if !direction:
 		return
@@ -78,7 +80,7 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name == "self_destruct":
 		animation_player.play("fade_out")
 		explode_paint()
-		Global.emit_event("ENEMY_EXPLODED", health)
+		Global.emit_event("ENEMY_EXPLODED", health, global_position)
 	if anim_name == "fade_out":
 		queue_free()
 
@@ -87,9 +89,12 @@ func explode_paint():
 	explode_audio_stream.pitch_scale = randf_range(0.9, 1.1)
 	explode_audio_stream.play()
 	
+	var blob_color = Color.BLACK
+	#var blob_color = Color.from_hsv(randf(), 1.0, 1.0)
 	for i in range(explode_blobs_count):
 		var blob: PaintBlob = PAINT_BLOB.instantiate()
 		blob.color = Color.BLACK if health <= 0 else Color.WHITE
+		blob.color = blob_color if health <= 0 else Color.WHITE
 		blob.splash_radius = explode_blob_splash_radius
 		blob.position = Vector3(position.x, position.y + 1.5, position.z)
 		blob.apply_impulse(explode_force * Global.random_direction_3d(), Vector3.ZERO)
@@ -101,3 +106,5 @@ func _on_position_check_timer_timeout() -> void:
 		print("enemy stall detected")
 		self_destruct()
 	last_checked_position = global_position
+	if global_position.y > MAX_HEIGHT:
+		global_position.y = -3.0

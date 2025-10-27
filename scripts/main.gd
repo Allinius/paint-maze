@@ -3,14 +3,13 @@ extends Node
 # autofire, paint fire rate / size modifiers
 # limit spawned enemy count
 # increasing maze size + saving best score per size
-# TODO exit button model
+# exit button model
 # sound effects (footsteps, paint, enemy noises)
-# TODO start tutorial info
+# start tutorial info
 # optimize drawing larger circles if necessary
-# TODO only activate exit button once painted over
-# TODO don't paint backward facing walls
-# TODO custom boot screen
-# TODO menus flair
+# title screen
+# only activate exit button once painted over
+# custom boot screen
 # loading screen
 
 const MAZE_GENERATOR = preload("uid://dnll2ejxt2cip")
@@ -47,6 +46,7 @@ func start(level: int):
 	title_screen.hide()
 	level_screen.hide()
 	loading_screen.hide()
+	level_time = 0.0
 	segment_start_time = Time.get_ticks_msec()
 
 func _on_start_game_pressed() -> void:
@@ -89,8 +89,10 @@ func _on_game_end_event():
 	Global.update_score(current_level, level_time)
 
 	if current_level < Global.level_sizes.size() - 1:
+		end_screen.find_child("CongratsLabel").text = "You made it out!"
 		end_screen.find_child("NextLevelButton").show()
 	else:
+		end_screen.find_child("CongratsLabel").text = "That's all for now, thanks for playing!"
 		end_screen.find_child("NextLevelButton").hide()
 
 	end_screen.show()
@@ -119,6 +121,7 @@ func update_level_screen():
 	
 	for level in range(min(Global.level_sizes.size(), Global.level_scores.size() + 1)):
 		var button: Button = LEVEL_BUTTON.instantiate()
+		button.text = "Size " + str(level + 1)
 		var time_label = button.get_child(0)
 		time_label.text = ""
 		if Global.level_scores.size() > level:

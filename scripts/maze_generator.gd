@@ -51,7 +51,7 @@ func generate_maze(width: int, height: int) -> Array[Array]:
 			stack.pop_back()
 	
 	var walls_to_delete: int = floor((width * height) / 20.0)
-	print(walls_to_delete)
+	# print(walls_to_delete)
 	for i in range(walls_to_delete):
 		while true:
 			var x = 1 + (randi() % (width - 2))

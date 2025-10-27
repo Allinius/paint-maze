@@ -13,6 +13,7 @@ const THROW_ANGLE = 15.0
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 
+const HIT_BY_PAINT_DISTANCE = 5.0
 
 const MIN_BLOB_SPLASH_RADIUS = 0.5
 const MAX_BLOB_SPLASH_RADIUS = 2.0
@@ -25,6 +26,8 @@ var time_since_last_fired = 100.0
 var footstep_interval = 4.0
 var time_since_last_footstep = 0.0
 
+var explosion_impulse: Vector3
+
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -32,6 +35,12 @@ func _ready():
 	Global.subscribe("GAME_RESUME", _capture_mouse)
 	Global.subscribe("GAME_END", _release_mouse)
 	Global.subscribe("ENEMY_EXPLODED", _on_enemy_exploded)
+
+func _exit_tree():
+	Global.player = null
+	Global.unsubscribe("GAME_RESUME", _capture_mouse)
+	Global.unsubscribe("GAME_END", _release_mouse)
+	Global.unsubscribe("ENEMY_EXPLODED", _on_enemy_exploded)
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -52,11 +61,15 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
+	
+	if explosion_impulse:
+		velocity += explosion_impulse
+		explosion_impulse.y = 0
+		explosion_impulse = explosion_impulse.move_toward(Vector3.ZERO, 100 * delta)
 	move_and_slide()
 	
 	handle_footsteps(delta)
 	
-
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -97,26 +110,27 @@ func fire_blob():
 	shot_sound_player.pitch_scale = 0.3 + (0.2 * randf() - 0.1)
 	shot_sound_player.play()
 
-
 func _capture_mouse():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 func _release_mouse():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-func _exit_tree():
-	Global.player = null
-	Global.unsubscribe("GAME_RESUME", _capture_mouse)
-	Global.unsubscribe("GAME_END", _release_mouse)
-	Global.unsubscribe("ENEMY_EXPLODED", _on_enemy_exploded)
-
-func _on_enemy_exploded(health: int):
+func _on_enemy_exploded(health: int, pos: Vector3):
+	var distance = pos.distance_to(global_position)
 	if health <= 0:
-		blob_splash_radius = min(blob_splash_radius + 0.2, MAX_BLOB_SPLASH_RADIUS)
-		fire_interval = max(fire_interval - 0.1, MIN_FIRE_INTERVAL)
-	else:
-		blob_splash_radius = max(blob_splash_radius - 0.2, MIN_BLOB_SPLASH_RADIUS)
-		fire_interval = min(fire_interval - 0.1, MAX_FIRE_INTERVAL)
+		# buff for every enemy exploded with black paint
+		blob_splash_radius = min(blob_splash_radius + 0.1, MAX_BLOB_SPLASH_RADIUS)
+		fire_interval = max(fire_interval * 0.85, MIN_FIRE_INTERVAL)
+	elif distance < HIT_BY_PAINT_DISTANCE:
+		# debuff only if white exploded enemy nearby
+		blob_splash_radius = max(blob_splash_radius - 0.1, MIN_BLOB_SPLASH_RADIUS)
+		fire_interval = min(fire_interval * 1.15, MAX_FIRE_INTERVAL)
+	
+	if distance < HIT_BY_PAINT_DISTANCE:
+		var nudge_direction = global_position - pos
+		#nudge_direction.y += 1.5
+		explosion_impulse = nudge_direction.normalized() * 10
 
 func handle_footsteps(delta):
 	footstep_interval = lerp(3.0, 0.6, velocity.length() / SPEED)

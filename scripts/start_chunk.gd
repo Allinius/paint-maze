@@ -17,5 +17,5 @@ func _physics_process(_delta: float) -> void:
 
 
 func _on_exit_button_body_entered(body: Node3D) -> void:
-	if body is Player:
+	if body is Player && roof_to_destroy:
 		roof_to_destroy.queue_free()
