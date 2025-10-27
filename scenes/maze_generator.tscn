@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dnll2ejxt2cip"]
+[gd_scene load_steps=8 format=3 uid="uid://dnll2ejxt2cip"]
 
 [ext_resource type="Script" uid="uid://bs3em0wd6boa" path="res://scripts/maze_generator.gd" id="1_8xbu6"]
 [ext_resource type="Script" uid="uid://de04bwmsct576" path="res://scripts/enemy_spawner.gd" id="2_tn72y"]
+[ext_resource type="PackedScene" uid="uid://bt62of12p3qqp" path="res://scenes/paint_splash_sound_player.tscn" id="3_6uyvq"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_164s8"]
 agent_radius = 1.0
@@ -29,3 +30,5 @@ environment = SubResource("Environment_r1w0m")
 
 [node name="EnemySpawner" type="Node3D" parent="."]
 script = ExtResource("2_tn72y")
+
+[node name="PaintSplashSoundPlayer" parent="." instance=ExtResource("3_6uyvq")]

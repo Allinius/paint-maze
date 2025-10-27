@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bt62of12p3qqp"]
+
+[ext_resource type="Script" uid="uid://djn8bfs1tvh2" path="res://paint_splash_sound_player.gd" id="1_wqx8b"]
+
+[node name="PaintSplashSoundPlayer" type="Node3D"]
+script = ExtResource("1_wqx8b")

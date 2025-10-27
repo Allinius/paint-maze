@@ -19,7 +19,6 @@ func _on_exit_button_body_entered(body: Node3D) -> void:
 	if body is Player:
 		animation_player.play("exit_door_slide")
 
-
 func _on_exit_zone_body_entered(body: Node3D) -> void:
 	if body is Player:
 		Global.emit_event("GAME_END")

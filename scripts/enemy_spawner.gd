@@ -2,19 +2,23 @@ extends Node3D
 
 const ENEMY = preload("uid://drsgc5ysv3lje")
 
-const MAX_HEIGHT = 4.0
+const MAX_HEIGHT = 3.9
 const SPAWN_INTERVAL = 5.0
+const MAX_ENEMY_COUNT = 2
 
 var splat_positions: Array[Vector3] = []
 var painted_amount = 0
 var spawn_interval = 20.0
 var time_since_spawn = 0.0
+var enemy_count := 0
 
 func _ready() -> void:
 	Global.subscribe("PAINT_SPLASH", _on_splat_event)
+	Global.subscribe("ENEMY_EXPLODED", _on_enemy_exploded)
 	
 func _exit_tree() -> void:
 	Global.unsubscribe("PAINT_SPLASH", _on_splat_event)
+	Global.unsubscribe("ENEMY_EXPLODED", _on_enemy_exploded)
 
 func _physics_process(delta: float) -> void:
 	time_since_spawn += delta
@@ -27,16 +31,22 @@ func _on_splat_event(center: Vector3, splash_radius: float, color: Color):
 		splat_positions.append(center)
 		painted_amount += splash_radius
 		calculate_spawn_interval()
-		print(painted_amount)
-		print(spawn_interval)
+		# print(painted_amount)
+		# print(spawn_interval)
 
 func calculate_spawn_interval():
 	spawn_interval = 20.0 - (min(painted_amount, 200.0) / 200.0) * 15.0
+	#spawn_interval = 5.0
 
 func spawn_enemy() -> void:
-	if splat_positions.size() == 0:
+	if splat_positions.size() == 0 || enemy_count >= MAX_ENEMY_COUNT:
 		return
 	var spawn_pos = splat_positions[randi() % splat_positions.size()]
 	var enemy = ENEMY.instantiate()
 	enemy.position = Vector3(spawn_pos.x, spawn_pos.y - 2, spawn_pos.z)
 	add_child(enemy)
+	enemy_count += 1
+
+func _on_enemy_exploded(_health: int):
+	enemy_count -= 1
+	

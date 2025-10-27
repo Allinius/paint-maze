@@ -1,7 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://drsgc5ysv3lje"]
+[gd_scene load_steps=14 format=3 uid="uid://drsgc5ysv3lje"]
 
 [ext_resource type="Script" uid="uid://dhyr7sfklv5wi" path="res://scripts/enemy.gd" id="1_md0e3"]
 [ext_resource type="Texture2D" uid="uid://nvbnt5qywsj2" path="res://assets/sprites/ghost.png" id="2_4ra3w"]
+[ext_resource type="AudioStream" uid="uid://bdk6a6qkkadyb" path="res://assets/audio/wail.wav" id="3_4ra3w"]
+[ext_resource type="AudioStream" uid="uid://cr85ket2uspx" path="res://assets/audio/bigsplat.wav" id="4_5uy6h"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iifgy"]
 height = 1.5
@@ -31,6 +33,63 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_md0e3"]
+resource_name = "fade_in"
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D:modulate")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D:region_rect")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Rect2(0, 0, 48, 48), Rect2(48, 0, 48, 48)]
+}
+
+[sub_resource type="Animation" id="Animation_wujgv"]
+resource_name = "fade_out"
+length = 0.750025
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(336, 0, 48, 48)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D:modulate")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.75),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_iifgy"]
@@ -113,63 +172,6 @@ tracks/0/keys = {
 "values": [Rect2(192, 0, 48, 48), Rect2(240, 0, 48, 48), Rect2(288, 0, 48, 48), Rect2(336, 0, 48, 48)]
 }
 
-[sub_resource type="Animation" id="Animation_wujgv"]
-resource_name = "fade_out"
-length = 0.750025
-step = 0.25
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite3D:region_rect")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Rect2(336, 0, 48, 48)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite3D:modulate")
-tracks/1/interp = 2
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.75),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_md0e3"]
-resource_name = "fade_in"
-step = 0.25
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite3D:modulate")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite3D:region_rect")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [Rect2(0, 0, 48, 48), Rect2(48, 0, 48, 48)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_iifgy"]
 _data = {
 &"RESET": SubResource("Animation_qi2p4"),
@@ -206,5 +208,19 @@ libraries = {
 }
 autoplay = "fade_in"
 
+[node name="PositionCheckTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="HitAudioStream" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_4ra3w")
+volume_db = 10.0
+
+[node name="ExplodeAudioStream" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("4_5uy6h")
+volume_db = 10.0
+unit_size = 15.0
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[connection signal="timeout" from="PositionCheckTimer" to="." method="_on_position_check_timer_timeout"]

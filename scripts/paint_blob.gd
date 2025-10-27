@@ -1,21 +1,21 @@
 class_name PaintBlob
 extends RigidBody3D
 
-@export var size := 0.4
 @export var splash_radius = 0.5
 @export var color := Color.BLACK
+@export var size_ratio := 0.4
 
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
 
 func _ready():
-	mesh_instance.mesh.height = size
-	mesh_instance.mesh.radius = size / 2.0
+	mesh_instance.mesh.height = splash_radius * size_ratio
+	mesh_instance.mesh.radius = splash_radius * size_ratio / 2
 	var material: StandardMaterial3D = mesh_instance.get_surface_override_material(0)
 	material.albedo_color = color;
 	
-	collision_shape.shape.radius = size / 2.0
+	collision_shape.shape.radius = splash_radius * size_ratio / 2
 
 func _physics_process(_delta: float) -> void:
 	if position.y < -50:

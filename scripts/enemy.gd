@@ -5,6 +5,8 @@ const PAINT_BLOB = preload("uid://c5ybl7jbx7jpb")
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var sprite_3d: Sprite3D = $Sprite3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var hit_audio_stream: AudioStreamPlayer3D = $HitAudioStream
+@onready var explode_audio_stream: AudioStreamPlayer3D = $ExplodeAudioStream
 
 @export var speed: float = 1.5
 @export var health := 3
@@ -15,6 +17,11 @@ const PAINT_BLOB = preload("uid://c5ybl7jbx7jpb")
 var navigating := true
 var direction: Vector3
 var exploded := false
+var last_checked_position: Vector3
+
+func _ready() -> void:
+	hit_audio_stream.pitch_scale = randf_range(0.8, 1.2)
+	hit_audio_stream.play()
 
 func _physics_process(_delta: float) -> void:
 	if navigating:
@@ -35,10 +42,13 @@ func update_direction() -> void:
 	direction = global_position.direction_to(next_path_pos)
 	
 	if nav_agent.is_navigation_finished():
-		print("destructing")
 		self_destruct()
 
 func move(delta: float):
+	#update speed
+	var player_distance = global_position.distance_to(Global.player.global_position)
+	speed = max(1.5, player_distance / 5)
+	
 	if !direction:
 		return
 	position = position + speed * delta * direction
@@ -50,7 +60,6 @@ func look_at_player() -> void:
 func self_destruct() -> void:
 	navigating = false
 	animation_player.play("self_destruct")
-	print("connected")
 	pass
 
 func _on_body_entered(body: Node3D) -> void:
@@ -61,16 +70,23 @@ func _on_body_entered(body: Node3D) -> void:
 		health -= 1
 		if health == 0:
 			self_destruct()
+		
+		hit_audio_stream.pitch_scale = randf_range(0.8, 1.2)
+		hit_audio_stream.play()
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name == "self_destruct":
 		animation_player.play("fade_out")
 		explode_paint()
+		Global.emit_event("ENEMY_EXPLODED", health)
 	if anim_name == "fade_out":
 		queue_free()
 
 func explode_paint():
 	exploded = true
+	explode_audio_stream.pitch_scale = randf_range(0.9, 1.1)
+	explode_audio_stream.play()
+	
 	for i in range(explode_blobs_count):
 		var blob: PaintBlob = PAINT_BLOB.instantiate()
 		blob.color = Color.BLACK if health <= 0 else Color.WHITE
@@ -78,4 +94,10 @@ func explode_paint():
 		blob.position = Vector3(position.x, position.y + 1.5, position.z)
 		blob.apply_impulse(explode_force * Global.random_direction_3d(), Vector3.ZERO)
 		get_parent().add_child(blob)
-	
+
+
+func _on_position_check_timer_timeout() -> void:
+	if last_checked_position.distance_to(global_position) < 0.1:
+		print("enemy stall detected")
+		self_destruct()
+	last_checked_position = global_position

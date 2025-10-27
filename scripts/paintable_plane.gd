@@ -65,18 +65,36 @@ func paint_world_point(world_point: Vector3, radius: float, color: Color):
 	
 	paint_uv(uv, get_pixel_radius(radius), color)
 
+#func paint_uv(uv: Vector2, radius: float, color: Color):
+	#var x = int(uv.x * texture_size.x)
+	#var y = int((1.0 - uv.y) * texture_size.y)
+#
+	##image.fill_rect(Rect2i(x - radius, y - radius, 2 * radius, 2 * radius), color)
+	#for i in range(-radius, radius):
+		#for j in range(-radius, radius):
+			#if i * i + j * j <= radius * radius:
+				#var px = x + i
+				#var py = y + j
+				#if px >= 0 && px < texture_size.x && py >= 0 && py < texture_size.y:
+					#image.set_pixel(px, py, color)
+	#image_texture.update(image)
+
 func paint_uv(uv: Vector2, radius: float, color: Color):
 	var x = int(uv.x * texture_size.x)
 	var y = int((1.0 - uv.y) * texture_size.y)
+	var r = int(radius)
+	var r_sq = radius * radius
 
-	#image.fill_rect(Rect2i(x - radius, y - radius, 2 * radius, 2 * radius), color)
-	for i in range(-radius, radius):
-		for j in range(-radius, radius):
-			if i * i + j * j <= radius * radius:
-				var px = x + i
-				var py = y + j
-				if px >= 0 && px < texture_size.x && py >= 0 && py < texture_size.y:
-					image.set_pixel(px, py, color)
+	for j in range(-r, r + 1):
+		var dy_sq = j * j
+		if dy_sq > r_sq:
+			continue
+		var dx = int(sqrt(r_sq - dy_sq))
+		var start_x = clamp(x - dx, 0, texture_size.x - 1)
+		var end_x = clamp(x + dx, 0, texture_size.x - 1)
+		var py = y + j
+		if py >= 0 and py < texture_size.y:
+			image.fill_rect(Rect2i(start_x, py, end_x - start_x + 1, 1), color)
 	image_texture.update(image)
 
 func will_paint(uv: Vector2, radius: float):

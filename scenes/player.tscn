@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://droy5n4ft44ag"]
+[gd_scene load_steps=5 format=3 uid="uid://droy5n4ft44ag"]
 
 [ext_resource type="Script" uid="uid://djm3bxylafdeu" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="AudioStream" uid="uid://cfm8hpxa1m35" path="res://assets/audio/tap.wav" id="2_g2els"]
+[ext_resource type="AudioStream" uid="uid://biekpp7m3um5v" path="res://assets/audio/pop.wav" id="3_qhqgy"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jotil"]
 
@@ -15,3 +17,13 @@ shape = SubResource("CapsuleShape3D_jotil")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head"]
+
+[node name="FootstepSoundPlayer" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+stream = ExtResource("2_g2els")
+unit_size = 0.5
+
+[node name="ShotSoundPlayer" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_qhqgy")
+volume_db = -10.0
+unit_size = 1.0

@@ -17,18 +17,13 @@ var map: Array[Array]
 func create(width: int, height: int) -> void:
 	map = generate_maze(width, height)
 	var info := count_steps(map)
-	print_maze(map)
-	print(info["counts"])
+	print_maze(map, info)
+	#print(info["counts"])
 	create_map(map)
 	bake_navigation_mesh(true)
 	spawn_start_chunk(info["start"])
 	spawn_end_chunk(info["end"]["pos"], info["end"]["edge"])
-	
-	var testenemy = ENEMY.instantiate()
-	testenemy.position = Vector3(PLANE_SIZE.x * info["end"]["pos"].x, 0, PLANE_SIZE.y * info["end"]["pos"].y)
-	add_child(testenemy)
-	
-	print(info["end"])
+	#print(info["end"])
 
 func generate_maze(width: int, height: int) -> Array[Array]:
 	var maze: Array[Array] = []
@@ -86,13 +81,18 @@ func get_unvisited_neighbors(maze: Array[Array], cell: Vector2i) -> Array:
 				result.append(Vector2i(x, y))
 	return result
 
-func print_maze(maze: Array[Array]) -> void:
+func print_maze(maze: Array[Array], info: Dictionary) -> void:
 	var width = maze[0].size()
 	var height = maze.size()
 	var out = ""
 	for y in range(height):
 		for x in range(width):
-			out += "##" if maze[y][x] == WALL else str(maze[y][x]).lpad(2, " ")
+			if y == info["start"].y && x == info["start"].x:
+				out += "S"
+			elif y == info["end"]["pos"].y && x == info["end"]["pos"].x:
+				out += "E"
+			else:
+				out += "#" if maze[y][x] == WALL else " "
 		out += "\n"
 	print(out)
 
