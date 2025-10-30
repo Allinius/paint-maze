@@ -101,7 +101,7 @@ func fire_blob():
 	var blob: RigidBody3D = PAINT_BLOB.instantiate()
 	var look_basis = (head.basis * camera.basis)
 	var throw_direction = -look_basis.rotated(look_basis.x, deg_to_rad(THROW_ANGLE)).z
-	blob.position = position
+	blob.position = position + throw_direction * 0.5
 	blob.splash_radius = blob_splash_radius
 	blob.apply_impulse(THROW_FORCE * throw_direction, Vector3.ZERO)
 	get_parent().add_child(blob)

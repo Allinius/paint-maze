@@ -12,6 +12,13 @@ extends Node
 # custom boot screen
 # loading screen
 
+# add level 7 secret
+# adjust explosions
+# prevent ghosts spawning on top of player
+# TODO making white off-white
+# TODO try irregular shapes
+# TODO save progress
+
 const MAZE_GENERATOR = preload("uid://dnll2ejxt2cip")
 const LEVEL_BUTTON = preload("uid://csmltqkxrnkx7")
 
@@ -25,7 +32,6 @@ var maze_generator: MazeGenerator
 
 var segment_start_time = 0.0
 var level_time := 0.0
-var current_level: int
 
 func _ready() -> void:
 	Global.subscribe("GAME_PAUSE", _on_pause_event)
@@ -37,10 +43,11 @@ func start(level: int):
 	loading_screen.show()
 	await get_tree().create_timer(0.05).timeout
 	
-	current_level = level
+	Global.current_level = level
 	maze_generator = MAZE_GENERATOR.instantiate()
 	add_child(maze_generator)
 	move_child(maze_generator, 0)
+	
 	maze_generator.create(Global.level_sizes[level], Global.level_sizes[level])
 	
 	title_screen.hide()
@@ -64,7 +71,7 @@ func _on_next_level_button_pressed() -> void:
 	end_screen.hide()
 	get_tree().paused = false
 	maze_generator.queue_free()
-	start(current_level + 1)
+	start(Global.current_level + 1)
 
 func _on_title_button_pressed() -> void:
 	title_screen.show()
@@ -72,6 +79,7 @@ func _on_title_button_pressed() -> void:
 	end_screen.hide()
 	get_tree().paused = false
 	maze_generator.queue_free()
+	Global.current_level = -1
 
 func _on_pause_event():
 	level_time += Time.get_ticks_msec() - segment_start_time
@@ -86,9 +94,10 @@ func _on_resume_event():
 func _on_game_end_event():
 	level_time += Time.get_ticks_msec() - segment_start_time
 	end_screen.find_child("ScoreLabel").text = "Time: " + str(level_time / 1000.0) + "s"
-	Global.update_score(current_level, level_time)
+	Global.update_score(Global.current_level, level_time)
 
-	if current_level < Global.level_sizes.size() - 1:
+	if Global.current_level < Global.level_sizes.size() - 1:
+		# last level
 		end_screen.find_child("CongratsLabel").text = "You made it out!"
 		end_screen.find_child("NextLevelButton").show()
 	else:
@@ -98,21 +107,6 @@ func _on_game_end_event():
 	end_screen.show()
 	get_tree().paused = true
 
-func update_level_screen2():
-	var buttons := level_screen.get_child(0).get_child(1).get_children()
-	
-	for level in range(buttons.size()):
-		var button = buttons[level]
-		var time_label = button.get_child(0)
-		time_label.text = ""
-		if Global.level_scores.size() > level:
-			time_label.text = str(Global.level_scores[level] / 1000) + "s"
-			button.show()
-		elif Global.level_scores.size() == level:
-			button.show()
-		else:
-			button.hide()
-	
 func update_level_screen():
 	var buttons_container := level_screen.get_child(0).get_child(1)
 	var existing_buttons = buttons_container.get_children()

@@ -2,8 +2,10 @@ extends Node
 
 var look_sensitivity := 0.005
 var player: Player
-var level_sizes: Array[int] = [7, 9, 13, 17, 21, 25, 31]
+#var level_sizes: Array[int] = [7, 9, 13, 17, 21, 25, 31]
+var level_sizes: Array[int] = [31]
 var level_scores: Array[float] = []
+var current_level: int
 
 var subscribers: Dictionary[String, Array] = {}
 

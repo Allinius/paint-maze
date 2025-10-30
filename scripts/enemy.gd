@@ -14,7 +14,10 @@ const PAINT_BLOB = preload("uid://c5ybl7jbx7jpb")
 @export var health := 3
 @export var explode_blobs_count := 15
 @export var explode_force := 10.0
-@export var explode_blob_splash_radius = 3.0
+@export var explode_blob_splash_radius = 2.0
+@export var default_explode_color = Color.WHITE
+@export var explode_color = Color.BLACK
+
 
 var navigating := true
 var direction: Vector3
@@ -89,12 +92,9 @@ func explode_paint():
 	explode_audio_stream.pitch_scale = randf_range(0.9, 1.1)
 	explode_audio_stream.play()
 	
-	var blob_color = Color.BLACK
-	#var blob_color = Color.from_hsv(randf(), 1.0, 1.0)
 	for i in range(explode_blobs_count):
 		var blob: PaintBlob = PAINT_BLOB.instantiate()
-		blob.color = Color.BLACK if health <= 0 else Color.WHITE
-		blob.color = blob_color if health <= 0 else Color.WHITE
+		blob.color = explode_color if health <= 0 else default_explode_color
 		blob.splash_radius = explode_blob_splash_radius
 		blob.position = Vector3(position.x, position.y + 1.5, position.z)
 		blob.apply_impulse(explode_force * Global.random_direction_3d(), Vector3.ZERO)

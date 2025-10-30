@@ -20,14 +20,8 @@ func _ready() -> void:
 		
 
 func init_mesh():
-	#var mesh := PlaneMesh.new()
-	#mesh.size = plane_size
-	#mesh_instance.mesh = mesh
 	mesh_instance.mesh.size = plane_size
-	
-	#var collision_box: BoxShape3D = BoxShape3D.new()
-	collision_shape.shape.size = Vector3(plane_size.x, 0.1, plane_size.y)
-	#collision_shape.shape = collision_box
+	collision_shape.shape.size = Vector3(plane_size.x, collision_shape.shape.size.y, plane_size.y)
 
 func init_texture():
 	image = Image.create(texture_size.x, texture_size.y, false, Image.FORMAT_RGBA8)
@@ -65,25 +59,23 @@ func paint_world_point(world_point: Vector3, radius: float, color: Color):
 	
 	paint_uv(uv, get_pixel_radius(radius), color)
 
-func paint_uv(uv: Vector2, radius: float, color: Color):
+func paint_uv(uv: Vector2, radius: int, color: Color):
 	var x = int(uv.x * texture_size.x)
 	var y = int((1.0 - uv.y) * texture_size.y)
-	var r = int(radius)
-	var r_sq = radius * radius
+	var radius_sq = radius * radius
 
 	# check if circle out of bounds
-	if x + r < 0 || x - r >= texture_size.x || y + r < 0 || y - r >= texture_size.y:
+	if x + radius < 0 || x - radius >= texture_size.x || y + radius < 0 || y - radius >= texture_size.y:
 		return
 
-	for j in range(-r, r + 1):
-		var py = y + j
+	for dy in range(-radius, radius + 1):
+		var py = y + dy
+		# clip vertically to texture bounds
 		if py < 0 || py >= texture_size.y:
 			continue
-		var dy_sq = j * j
-		if dy_sq > r_sq:
-			continue
 		
-		var dx = int(sqrt(r_sq - dy_sq))
+		var dy_sq = dy * dy
+		var dx = int(sqrt(radius_sq - dy_sq))
 		var start_x = x - dx
 		var end_x = x + dx
 		
@@ -97,11 +89,7 @@ func paint_uv(uv: Vector2, radius: float, color: Color):
 	
 	image_texture.update(image)
 
-func will_paint(uv: Vector2, radius: float):
-	var uvrad = Vector2(radius / texture_size.x, radius / texture_size.y)
-	return uv.x >= -uvrad.x && uv.x <= 1 + uvrad.x && uv.y >= -uvrad.y && uv.y <= 1 + uvrad.y
-
-func get_pixel_radius(unit_radius: float):
+func get_pixel_radius(unit_radius: float) -> int:
 	var pixel_in_units = plane_size.x / texture_size.x
 	return floor(unit_radius / pixel_in_units)
 	
